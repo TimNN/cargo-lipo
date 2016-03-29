@@ -8,7 +8,7 @@ From anywhere you would usually run `cargo` you can now run `cargo lipo` or `car
 
 ## Installation
 
-Install `cargo lipo` with `cargo install cargo-lipo`.
+Install `cargo lipo` with `cargo install cargo-lipo`. `cargo lipo` can be build with rust 1.7 and later.
 
 You also need a rust compiler which can compile for the iOS targets. If you use [rustup](https://www.rustup.rs/) all you should have to do is
 
