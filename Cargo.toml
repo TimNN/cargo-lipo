@@ -11,7 +11,7 @@ readme = "README.md"
 
 keywords = ["cargo", "iOS"]
 
-license = "MIT"
+license = "MIT/Apache-2.0"
 
 [dependencies]
 clap = "2.2.3"
