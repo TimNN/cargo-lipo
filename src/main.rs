@@ -67,7 +67,11 @@ fn build_app<'a, 'b>() -> App<'a, 'b> {
     App::new("cargo-lipo")
         .version(env!("CARGO_PKG_VERSION"))
         .author("Tim Neumann <mail@timnn.me>")
+        .about("This binary should only be executed as a custom cargo subcommand (ie. `cargo lipo`)")
+        .bin_name("cargo")
         .subcommand(SubCommand::with_name("lipo")
+            .version(env!("CARGO_PKG_VERSION"))
+            .author("Tim Neumann <mail@timnn.me>")
             .about("Automatically create universal libraries")
             .args_from_usage("--release 'Compiles in release mode'
                               -v --verbose 'Print additional information'")
