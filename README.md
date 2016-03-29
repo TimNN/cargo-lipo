@@ -6,6 +6,14 @@ Provides a `cargo lipo` subcommand which automatically creates a universal libra
 
 From anywhere you would usually run `cargo` you can now run `cargo lipo` or `cargo lipo --release` to create a universal library for ios, which can be found in `$target/universal/{release|debug}/$lib_name.a`.
 
+Make sure you have a library target in your `Cargo.toml` with a crate type of `staticlib`:
+
+```toml
+[lib]
+name = ...
+crate-type = ["staticlib"]
+```
+
 ## Installation
 
 Install `cargo lipo` with `cargo install cargo-lipo`. `cargo lipo` can be build with rust 1.7 and later.
