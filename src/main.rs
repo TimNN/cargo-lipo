@@ -63,7 +63,7 @@ fn real_main() -> Result<()> {
     Ok(())
 }
 
-fn build_app<'a, 'v, 'ab, 'u, 'h, 'ar>() -> App<'a, 'v, 'ab, 'u, 'h, 'ar> {
+fn build_app<'a, 'b>() -> App<'a, 'b> {
     App::new("cargo-lipo")
         .version(env!("CARGO_PKG_VERSION"))
         .author("Tim Neumann <mail@timnn.me>")

@@ -14,5 +14,5 @@ keywords = ["cargo", "iOS"]
 license = "MIT"
 
 [dependencies]
-clap = "1.4"
-serde_json = "0.6"
+clap = "2.2.3"
+serde_json = "0.7.0"
