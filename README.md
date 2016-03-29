@@ -10,7 +10,7 @@ Make sure you have a library target in your `Cargo.toml` with a crate type of `s
 
 ```toml
 [lib]
-name = ...
+name = "..."
 crate-type = ["staticlib"]
 ```
 
