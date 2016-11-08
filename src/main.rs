@@ -36,7 +36,12 @@ fn real_main() -> Result<()> {
 
     let lib_name = try!(find_lib_name(verbose));
 
-    for triple in IOS_TRIPLES {
+    let triples: Vec<&str> = match matches.values_of("targets") {
+        Some(values) => values.collect(),
+        None => IOS_TRIPLES.to_vec(),
+    };
+
+    for triple in &triples {
         try!(build_triple(triple, release, verbose));
     }
 
@@ -52,7 +57,7 @@ fn real_main() -> Result<()> {
     cmd.args(&["-create", "-output"]);
     cmd.arg(out.as_os_str());
 
-    for triple in IOS_TRIPLES {
+    for triple in &triples {
         cmd.arg(target_path.join(triple).join(target_subdir).join(&lib_name).as_os_str());
     }
 
@@ -74,6 +79,7 @@ fn build_app<'a, 'b>() -> App<'a, 'b> {
             .author("Tim Neumann <mail@timnn.me>")
             .about("Automatically create universal libraries")
             .args_from_usage("--release 'Compiles in release mode'
+                              --targets=[TRIPLE1,TRIPLE2] 'Build for the target triples'
                               -v --verbose 'Print additional information'")
         )
 }
