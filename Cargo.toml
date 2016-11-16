@@ -1,6 +1,6 @@
 [package]
 name = "cargo-lipo"
-version = "1.0.0"
+version = "1.0.1"
 authors = ["Tim Neumann <mail@timnn.me>"]
 description = "cargo lipo subcommand to automatically create universal libraries for iOS"
 
