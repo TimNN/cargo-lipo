@@ -14,5 +14,5 @@ keywords = ["cargo", "iOS"]
 license = "MIT/Apache-2.0"
 
 [dependencies]
-clap = "2.2.3"
+clap = "~2.2.3"
 serde_json = "0.7.0"
