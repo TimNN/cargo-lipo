@@ -41,8 +41,10 @@ fn real_main() -> Result<()> {
         None => IOS_TRIPLES.to_vec(),
     };
 
+    let features = matches.value_of("features").unwrap_or("");
+
     for triple in &triples {
-        try!(build_triple(triple, release, verbose));
+        try!(build_triple(triple, release, verbose, features));
     }
 
     let target_path = try!(find_target_path(verbose));
@@ -80,14 +82,15 @@ fn build_app<'a, 'b>() -> App<'a, 'b> {
             .about("Automatically create universal libraries")
             .args_from_usage("--release 'Compiles in release mode'
                               --targets=[TRIPLE1,TRIPLE2] 'Build for the target triples'
+                              --features=[FEATURES] 'Space-separated list of features to also build'
                               -v --verbose 'Print additional information'")
         )
 }
 
 /// Invoke `cargo build` for the given triple.
-fn build_triple(triple: &str, release: bool, verbose: bool) -> Result<()> {
+fn build_triple(triple: &str, release: bool, verbose: bool, features: &str) -> Result<()> {
     let mut cmd = Command::new("cargo");
-    cmd.args(&["build", "--target", triple, "--lib"]);
+    cmd.args(&["build", "--target", triple, "--lib", "--features", features]);
 
     if release { cmd.arg("--release"); }
     if verbose { cmd.arg("--verbose"); }
