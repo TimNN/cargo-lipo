@@ -41,7 +41,7 @@ fn real_main() -> Result<()> {
         None => IOS_TRIPLES.to_vec(),
     };
 
-    let features = matches.value_of("features").unwrap();
+    let features = matches.value_of("features").unwrap_or("");
 
     for triple in &triples {
         try!(build_triple(triple, release, verbose, features));
