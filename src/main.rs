@@ -43,8 +43,10 @@ fn real_main() -> Result<()> {
 
     let features = matches.value_of("features").unwrap_or("");
 
+    let color = matches.value_of("color").unwrap_or("auto");
+
     for triple in &triples {
-        try!(build_triple(triple, release, verbose, features));
+        try!(build_triple(triple, release, verbose, features, color));
     }
 
     let target_path = try!(find_target_path(verbose));
@@ -83,14 +85,15 @@ fn build_app<'a, 'b>() -> App<'a, 'b> {
             .args_from_usage("--release 'Compiles in release mode'
                               --targets=[TRIPLE1,TRIPLE2] 'Build for the target triples'
                               --features=[FEATURES] 'Space-separated list of features to also build'
+                              --color=[WHEN] 'Coloring: auto, always, never'
                               -v --verbose 'Print additional information'")
         )
 }
 
 /// Invoke `cargo build` for the given triple.
-fn build_triple(triple: &str, release: bool, verbose: bool, features: &str) -> Result<()> {
+fn build_triple(triple: &str, release: bool, verbose: bool, features: &str, color: &str) -> Result<()> {
     let mut cmd = Command::new("cargo");
-    cmd.args(&["build", "--target", triple, "--lib", "--features", features]);
+    cmd.args(&["build", "--target", triple, "--lib", "--features", features, "--color", color]);
 
     if release { cmd.arg("--release"); }
     if verbose { cmd.arg("--verbose"); }
