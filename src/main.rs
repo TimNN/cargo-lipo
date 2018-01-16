@@ -34,7 +34,9 @@ fn real_main() -> Result<()> {
     let release = matches.is_present("release");
     let verbose = matches.is_present("verbose");
 
-    let lib_name = try!(find_lib_name(verbose));
+    let package = matches.value_of("package");
+
+    let lib_name = try!(find_lib_name(package, verbose));
 
     let triples: Vec<&str> = match matches.values_of("targets") {
         Some(values) => values.collect(),
@@ -46,7 +48,7 @@ fn real_main() -> Result<()> {
     let color = matches.value_of("color").unwrap_or("auto");
 
     for triple in &triples {
-        try!(build_triple(triple, release, verbose, features, color));
+        try!(build_triple(triple, release, verbose, features, color, package));
     }
 
     let target_path = try!(find_target_path(verbose));
@@ -86,15 +88,16 @@ fn build_app<'a, 'b>() -> App<'a, 'b> {
                               --targets=[TRIPLE1,TRIPLE2] 'Build for the target triples'
                               --features=[FEATURES] 'Space-separated list of features to also build'
                               --color=[WHEN] 'Coloring: auto, always, never'
+                              --package=[SPEC] 'Build the target package'
                               -v --verbose 'Print additional information'")
         )
 }
 
 /// Invoke `cargo build` for the given triple.
-fn build_triple(triple: &str, release: bool, verbose: bool, features: &str, color: &str) -> Result<()> {
+fn build_triple(triple: &str, release: bool, verbose: bool, features: &str, color: &str, package: Option<&str>) -> Result<()> {
     let mut cmd = Command::new("cargo");
     cmd.args(&["build", "--target", triple, "--lib", "--features", features, "--color", color]);
-
+    if let Some(package) = package { cmd.args(&["--package", package]); }
     if release { cmd.arg("--release"); }
     if verbose { cmd.arg("--verbose"); }
 
@@ -107,10 +110,12 @@ fn build_triple(triple: &str, release: bool, verbose: bool, features: &str, colo
 }
 
 /// Find the name of the staticlibrary to build as defined in the project's `Cargo.toml`.
-fn find_lib_name(verbose: bool) -> Result<String> {
+fn find_lib_name(package: Option<&str>, verbose: bool) -> Result<String> {
     static ERR: &'static str = "Failed to parse `cargo read-manifest` output";
-
-    let value = trm!(ERR; cargo_json_value("read-manifest", verbose));
+    
+    let manifest_path = if let Some(p) = package { [p, "Cargo.toml"].join("/") }
+        else { String::from("Cargo.toml")};
+    let value = trm!(ERR; cargo_json_value(&["read-manifest", "--manifest-path", &manifest_path], verbose));
 
     let targets = trm!(ERR; json_get!(Array, value.targets));
 
@@ -143,7 +148,7 @@ fn find_target_path(verbose: bool) -> Result<PathBuf> {
     static ERR: &'static str = "Failed to parse `cargo locate-project`";
     static ERR2: &'static str = "Failed to verify target directory";
 
-    let value = trm!(ERR; cargo_json_value("locate-project", verbose));
+    let value = trm!(ERR; cargo_json_value(&["locate-project"], verbose));
 
     let toml_str = trm!(ERR; json_get!(String, value.root));
     let toml: &Path = toml_str.as_ref();
@@ -161,9 +166,9 @@ fn find_target_path(verbose: bool) -> Result<PathBuf> {
 }
 
 /// Create a `serde_json::Value` from the output of the given cargo subcomand.
-fn cargo_json_value(subcommand: &str, verbose: bool) -> Result<json::Value> {
+fn cargo_json_value(subcommands: &[&str], verbose: bool) -> Result<json::Value> {
     let mut cmd = Command::new("cargo");
-    cmd.arg(subcommand);
+    cmd.args(subcommands);
 
     log_command(&cmd, verbose);
 
