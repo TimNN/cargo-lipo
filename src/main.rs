@@ -140,7 +140,7 @@ fn find_lib_name(verbose: bool) -> Result<String> {
 
 /// Find the path to the project's `target` directory.
 fn find_target_path(verbose: bool) -> Result<PathBuf> {
-    static ERR: &'static str = "Failed to parse `cargo locate-project`";
+    static ERR: &'static str = "Failed to parse `cargo metadata`";
     static ERR2: &'static str = "Failed to verify target directory";
 
     let value = trm!(ERR; cargo_json_value("metadata", verbose));
