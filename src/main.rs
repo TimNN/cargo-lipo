@@ -140,23 +140,20 @@ fn find_lib_name(verbose: bool) -> Result<String> {
 
 /// Find the path to the project's `target` directory.
 fn find_target_path(verbose: bool) -> Result<PathBuf> {
-    static ERR: &'static str = "Failed to parse `cargo locate-project`";
+    static ERR: &'static str = "Failed to parse `cargo metadata`";
     static ERR2: &'static str = "Failed to verify target directory";
 
-    let value = trm!(ERR; cargo_json_value("locate-project", verbose));
+    let value = trm!(ERR; cargo_json_value("metadata", verbose));
 
-    let toml_str = trm!(ERR; json_get!(String, value.root));
-    let toml: &Path = toml_str.as_ref();
-
-    let root = trm!(ERR; toml.parent().ok_or("Cargo.toml has no parent directory"));
-    let target = root.join("target");
+    let target_directory = trm!(ERR; json_get!(String, value.target_directory));
+    let target: &Path = target_directory.as_ref();
 
     let meta = trm!(ERR2; fs::metadata(&target));
 
     if !meta.is_dir() {
         Err(Error::new(ERR2, "not a directory"))
     } else {
-        Ok(target)
+        Ok(target.to_path_buf())
     }
 }
 
