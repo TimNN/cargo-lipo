@@ -23,7 +23,6 @@ You also need a rust compiler which can compile for the iOS targets. If you use 
 ```sh
 rustup target add aarch64-apple-ios
 rustup target add armv7-apple-ios
-rustup target add armv7s-apple-ios
 rustup target add i386-apple-ios
 rustup target add x86_64-apple-ios
 ```
@@ -33,7 +32,6 @@ If you use a recent version of [multirust](https://github.com/brson/multirust)
 ```sh
 multirust add-target aarch64-apple-ios
 multirust add-target armv7-apple-ios
-multirust add-target armv7s-apple-ios
 multirust add-target i386-apple-ios
 multirust add-target x86_64-apple-ios
 ```

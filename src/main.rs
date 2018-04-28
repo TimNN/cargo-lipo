@@ -15,7 +15,6 @@ use msg_error::{Error, Result};
 static IOS_TRIPLES: &'static [&'static str] = &[
     "aarch64-apple-ios",
     "armv7-apple-ios",
-    "armv7s-apple-ios",
     "i386-apple-ios",
     "x86_64-apple-ios",
 ];
