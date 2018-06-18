@@ -52,7 +52,7 @@ fn real_main() -> Result<()> {
             verbose,
             features,
             color,
-            no_default_features
+            no_default_features,
         }));
     }
 
@@ -98,7 +98,7 @@ fn build_app<'a, 'b>() -> App<'a, 'b> {
         )
 }
 
-/// Struct containing arguments for build_triple
+/// Struct containing arguments for `build_triple`.
 #[derive(Debug, Clone)]
 struct BuildOptions<'a> {
     pub triple: &'a str,
@@ -110,17 +110,22 @@ struct BuildOptions<'a> {
 }
 
 /// Invoke `cargo build` for the given triple.
-fn build_triple<'a>(info: BuildOptions<'a>) -> Result<()> {
+fn build_triple(build: BuildOptions) -> Result<()> {
     let mut cmd = Command::new("cargo");
-    cmd.args(&["build", "--target", info.triple, "--lib", "--features", info.features, "--color", info.color]);
+    cmd.args(&[
+        "build",
+        "--target", build.triple,
+        "--lib",
+        "--features", build.features,
+        "--color", build.color]);
 
-    if info.release { cmd.arg("--release"); }
-    if info.verbose { cmd.arg("--verbose"); }
-    if info.no_default_features { cmd.arg("--no-default-features"); }
+    if build.release { cmd.arg("--release"); }
+    if build.verbose { cmd.arg("--verbose"); }
+    if build.no_default_features { cmd.arg("--no-default-features"); }
 
-    log_command(&cmd, info.verbose);
+    log_command(&cmd, build.verbose);
 
-    let status = trm!("Failed to build library for {}", info.triple; cmd.status());
+    let status = trm!("Failed to build library for {}", build.triple; cmd.status());
     trm!("Cargo exited unsuccessfully"; exit_to_result(status));
 
     Ok(())
