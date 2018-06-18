@@ -41,11 +41,19 @@ fn real_main() -> Result<()> {
     };
 
     let features = matches.value_of("features").unwrap_or("");
+    let no_default_features = matches.is_present("no-default-features");
 
     let color = matches.value_of("color").unwrap_or("auto");
 
     for triple in &triples {
-        try!(build_triple(triple, release, verbose, features, color));
+        try!(build_triple(BuildOptions {
+            triple,
+            release,
+            verbose,
+            features,
+            color,
+            no_default_features,
+        }));
     }
 
     let target_path = try!(find_target_path(verbose));
@@ -84,22 +92,40 @@ fn build_app<'a, 'b>() -> App<'a, 'b> {
             .args_from_usage("--release 'Compiles in release mode'
                               --targets=[TRIPLE1,TRIPLE2] 'Build for the target triples'
                               --features=[FEATURES] 'Space-separated list of features to also build'
+                              --no-default-features 'Do not activate the `default` feature'
                               --color=[WHEN] 'Coloring: auto, always, never'
                               -v --verbose 'Print additional information'")
         )
 }
 
+/// Struct containing arguments for `build_triple`.
+#[derive(Debug, Clone)]
+struct BuildOptions<'a> {
+    pub triple: &'a str,
+    pub release: bool,
+    pub verbose: bool,
+    pub features: &'a str,
+    pub color: &'a str,
+    pub no_default_features: bool,
+}
+
 /// Invoke `cargo build` for the given triple.
-fn build_triple(triple: &str, release: bool, verbose: bool, features: &str, color: &str) -> Result<()> {
+fn build_triple(build: BuildOptions) -> Result<()> {
     let mut cmd = Command::new("cargo");
-    cmd.args(&["build", "--target", triple, "--lib", "--features", features, "--color", color]);
+    cmd.args(&[
+        "build",
+        "--target", build.triple,
+        "--lib",
+        "--features", build.features,
+        "--color", build.color]);
 
-    if release { cmd.arg("--release"); }
-    if verbose { cmd.arg("--verbose"); }
+    if build.release { cmd.arg("--release"); }
+    if build.verbose { cmd.arg("--verbose"); }
+    if build.no_default_features { cmd.arg("--no-default-features"); }
 
-    log_command(&cmd, verbose);
+    log_command(&cmd, build.verbose);
 
-    let status = trm!("Failed to build library for {}", triple; cmd.status());
+    let status = trm!("Failed to build library for {}", build.triple; cmd.status());
     trm!("Cargo exited unsuccessfully"; exit_to_result(status));
 
     Ok(())
