@@ -27,18 +27,7 @@ rustup target add i386-apple-ios
 rustup target add x86_64-apple-ios
 ```
 
-If you use a recent version of [multirust](https://github.com/brson/multirust)
-
-```sh
-multirust add-target aarch64-apple-ios
-multirust add-target armv7-apple-ios
-multirust add-target i386-apple-ios
-multirust add-target x86_64-apple-ios
-```
-
-should work.
-
-**Note:** both will only work on stable starting with the 1.8 release.
+**Note:** This should work on stable starting with the 1.8 release.
 
 Alternatively you can build a rust compiler with iOS support yourself.
 
