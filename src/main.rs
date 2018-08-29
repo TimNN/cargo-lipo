@@ -20,6 +20,11 @@ static IOS_TRIPLES: &'static [&'static str] = &[
 ];
 
 fn main() {
+    #[cfg(not(any(test, target = "i686-apple-darwin", target = "x86_64-apple-darwin")))]
+    println!("Due to a known rustc issue, cargo-lipo can only be run on macOS. \
+              See https://github.com/rust-lang/rust/issues/36156#issuecomment-373201676 \
+              for more info.");
+
     if let Err(err) = real_main() {
         println!("{}", err);
         process::exit(1);
