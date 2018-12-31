@@ -16,7 +16,7 @@ pub(crate) struct Package<'a> {
 impl<'a> Meta<'a> {
     #[allow(clippy::useless_let_if_seq)] // multiple variables are initialized
     pub(crate) fn new(
-        invocation: &'a Invocation,
+        invocation: &Invocation,
         meta: &'a cargo_metadata::Metadata,
     ) -> Result<Meta<'a>> {
         let package_names: Vec<_>;

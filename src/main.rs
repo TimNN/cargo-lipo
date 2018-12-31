@@ -1,4 +1,4 @@
-#![allow(clippy::needless_pass_by_value, clippy::new_ret_no_self)]
+#![allow(clippy::needless_pass_by_value, clippy::new_ret_no_self, clippy::single_char_pattern)]
 #![deny(unused_must_use)]
 
 use log::{error, trace};
@@ -11,6 +11,7 @@ mod cargo;
 mod exec;
 mod lipo;
 mod meta;
+mod xcode;
 
 type Result<T> = std::result::Result<T, failure::Error>;
 
@@ -42,6 +43,21 @@ struct Invocation {
     #[structopt(long, short)]
     #[structopt(parse(from_occurrences))]
     verbose: u32,
+
+    /// Determine `targets` and `release` from the environment provided by XCode to build scripts.
+    #[structopt(long = "xcode-integ")]
+    #[structopt(conflicts_with = "release", conflicts_with = "targets")]
+    xcode_integ: bool,
+
+    /// Don't run `cargo clean` when XCode cleans the project.
+    #[structopt(long = "xcode-ignore-clean")]
+    #[structopt(requires = "xcode_integ")]
+    xcode_ignore_clean: bool,
+
+    /// Don't remove environment variables that can cause issues with build scripts when calling
+    /// cargo.
+    #[structopt(long = "no-sanitize-env")]
+    no_sanitize_env: bool,
 
     /// Build artifacts in release mode, with optimizations
     #[structopt(long)]
@@ -122,9 +138,12 @@ fn run(invocation: Invocation) -> Result<()> {
     trace!("Metadata: {:#?}", meta);
 
     let meta = meta::Meta::new(&invocation, &meta)?;
-    let cargo = cargo::Cargo::new(&invocation);
 
-    lipo::build(&cargo, &meta, &invocation.targets)
+    if invocation.xcode_integ {
+        xcode::integ(&meta, invocation)
+    } else {
+        lipo::build(&cargo::Cargo::new(&invocation), &meta, &invocation.targets)
+    }
 }
 
 #[derive(Copy, Clone, Debug)]

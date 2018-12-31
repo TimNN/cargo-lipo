@@ -46,6 +46,10 @@ impl<'a> Cargo<'a> {
             cmd.arg("--frozen");
         }
 
+        if !self.invocation.no_sanitize_env {
+            crate::xcode::sanitize_env(&mut cmd);
+        }
+
         cmd
     }
 
