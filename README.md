@@ -27,10 +27,6 @@ rustup target add i386-apple-ios
 rustup target add x86_64-apple-ios
 ```
 
-**Note:** This should work on stable starting with the 1.8 release.
-
-Alternatively you can build a rust compiler with iOS support yourself.
-
 ## Troubleshooting
 
  Cargo fails with ``error: can't find crate for `std` ``: Your rust compiler most likely does not support cross-compiling to iOS.

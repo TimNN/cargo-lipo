@@ -1,221 +1,166 @@
-extern crate clap;
-extern crate serde_json as json;
+#![allow(clippy::needless_pass_by_value, clippy::new_ret_no_self)]
+#![deny(unused_must_use)]
 
-use clap::{App, SubCommand};
-use std::fs;
-use std::path::{Path, PathBuf};
-use std::process::{self, Command, ExitStatus};
-use std::result::Result as StdResult;
+use log::{error, trace};
+use std::cmp;
+use std::ffi::OsString;
+use std::path::PathBuf;
+use structopt::StructOpt;
 
-use msg_error::{Error, Result};
+mod cargo;
+mod exec;
+mod lipo;
+mod meta;
 
-#[macro_use] mod json_macros;
-#[macro_use] mod msg_error;
+type Result<T> = std::result::Result<T, failure::Error>;
 
-static IOS_TRIPLES: &'static [&'static str] = &[
-    "aarch64-apple-ios",
-    "armv7-apple-ios",
-    "i386-apple-ios",
-    "x86_64-apple-ios",
-];
+/// Automatically create universal libraries.
+#[derive(StructOpt, Debug)]
+#[structopt(name = "cargo-lipo", bin_name = "cargo")]
+#[structopt(author = "")]
+#[structopt(raw(setting = "clap::AppSettings::SubcommandRequiredElseHelp"))]
+struct CargoInvocation {
+    #[structopt(subcommand)]
+    cmd: Command,
+}
+
+#[derive(StructOpt, Debug)]
+enum Command {
+    /// Automatically create universal libraries.
+    #[structopt(name = "lipo")]
+    #[structopt(author = "")]
+    Invocation(Invocation),
+}
+
+#[derive(StructOpt, Debug)]
+struct Invocation {
+    /// Coloring: auto, always, never
+    #[structopt(long, default_value = "auto", value_name = "WHEN")]
+    color: Coloring,
+
+    /// Use verbose output (-vv very verbose output)
+    #[structopt(long, short)]
+    #[structopt(parse(from_occurrences))]
+    verbose: u32,
+
+    /// Build artifacts in release mode, with optimizations
+    #[structopt(long)]
+    release: bool,
+
+    /// Require Cargo.lock and cache are up to date
+    #[structopt(long)]
+    frozen: bool,
+
+    /// Require Cargo.lock is up to date
+    #[structopt(long)]
+    locked: bool,
+
+    /// Number of parallel jobs to be used by Cargo, defaults to # of CPUs
+    #[structopt(long, short, value_name = "N")]
+    jobs: Option<u32>,
+
+    /// Build all packages in the workspace (that have a `staticlib` target)
+    #[structopt(long)]
+    all: bool,
+
+    /// Package(s) to build (must have a `staticlib` target)
+    #[structopt(short, long = "package", value_name = "NAME")]
+    #[structopt(conflicts_with = "all")]
+    packages: Vec<String>,
+
+    /// Activate all available features
+    #[structopt(long = "all-features")]
+    all_features: bool,
+
+    /// Path to Cargo.toml
+    #[structopt(long = "no-default-features")]
+    no_default_features: bool,
+
+    /// Space-separated list of features to activate
+    #[structopt(long, value_name = "FEATURES")]
+    #[structopt(parse(from_os_str))]
+    features: Option<OsString>,
+
+    /// Path to Cargo.toml
+    #[structopt(long = "manifest-path", value_name = "PATH")]
+    #[structopt(parse(from_os_str))]
+    manifest_path: Option<PathBuf>,
+
+    /// Build for the target triples
+    #[structopt(long, value_name = "TARGET1,TARGET2")]
+    #[structopt(value_delimiter = ",")]
+    #[structopt(default_value = "aarch64-apple-ios,x86_64-apple-ios")]
+    targets: Vec<String>,
+}
 
 fn main() {
-    #[cfg(not(any(test, target = "i686-apple-darwin", target = "x86_64-apple-darwin")))]
-    println!("Due to a known rustc issue, cargo-lipo can only be run on macOS. \
-              See https://github.com/rust-lang/rust/issues/36156#issuecomment-373201676 \
-              for more info.");
+    let cargo = CargoInvocation::from_args();
+    let Command::Invocation(invocation) = cargo.cmd;
 
-    if let Err(err) = real_main() {
-        println!("{}", err);
-        process::exit(1);
-    }
-}
-
-fn real_main() -> Result<()> {
-    let matches = build_app().get_matches();
-    let matches = trm!("Invalid invocation"; matches.subcommand_matches("lipo").ok_or("subcommand required"));
-
-    let release = matches.is_present("release");
-    let verbose = matches.is_present("verbose");
-
-    let lib_name = try!(find_lib_name(verbose));
-
-    let triples: Vec<&str> = match matches.values_of("targets") {
-        Some(values) => values.collect(),
-        None => IOS_TRIPLES.to_vec(),
-    };
-
-    let features = matches.value_of("features").unwrap_or("");
-    let no_default_features = matches.is_present("no-default-features");
-
-    let color = matches.value_of("color").unwrap_or("auto");
-
-    for triple in &triples {
-        try!(build_triple(BuildOptions {
-            triple,
-            release,
-            verbose,
-            features,
-            color,
-            no_default_features,
-        }));
-    }
-
-    let target_path = try!(find_target_path(verbose));
-    let target_subdir = if release { "release" } else { "debug" };
-
-    let out_dir = target_path.join("universal").join(&target_subdir);
-    let out = out_dir.join(&lib_name);
-
-    trm!("Failed to create output directory"; fs::create_dir_all(&out_dir));
-
-    let mut cmd = Command::new("lipo");
-    cmd.args(&["-create", "-output"]);
-    cmd.arg(out.as_os_str());
-
-    for triple in &triples {
-        cmd.arg(target_path.join(triple).join(target_subdir).join(&lib_name).as_os_str());
-    }
-
-    let status = trm!("Failed to execute lipo"; cmd.status());
-
-    trm!("lipo exited unsuccessfully"; exit_to_result(status));
-
-    Ok(())
-}
-
-fn build_app<'a, 'b>() -> App<'a, 'b> {
-    App::new("cargo-lipo")
-        .version(env!("CARGO_PKG_VERSION"))
-        .author("Tim Neumann <mail@timnn.me>")
-        .about("This binary should only be executed as a custom cargo subcommand (ie. `cargo lipo`)")
-        .bin_name("cargo")
-        .subcommand(SubCommand::with_name("lipo")
-            .version(env!("CARGO_PKG_VERSION"))
-            .author("Tim Neumann <mail@timnn.me>")
-            .about("Automatically create universal libraries")
-            .args_from_usage("--release 'Compiles in release mode'
-                              --targets=[TRIPLE1,TRIPLE2] 'Build for the target triples'
-                              --features=[FEATURES] 'Space-separated list of features to also build'
-                              --no-default-features 'Do not activate the `default` feature'
-                              --color=[WHEN] 'Coloring: auto, always, never'
-                              -v --verbose 'Print additional information'")
+    env_logger::Builder::from_default_env()
+        .default_format_timestamp(false)
+        .write_style(invocation.color.log_style())
+        .filter_module(
+            "cargo_lipo",
+            [log::LevelFilter::Info, log::LevelFilter::Debug, log::LevelFilter::Trace]
+                [cmp::min(invocation.verbose, 2) as usize],
         )
+        .init();
+
+    trace!("Invocation: {:#?}", invocation);
+
+    if let Err(e) = run(invocation) {
+        error!("{}", e);
+        std::process::exit(1);
+    }
 }
 
-/// Struct containing arguments for `build_triple`.
-#[derive(Debug, Clone)]
-struct BuildOptions<'a> {
-    pub triple: &'a str,
-    pub release: bool,
-    pub verbose: bool,
-    pub features: &'a str,
-    pub color: &'a str,
-    pub no_default_features: bool,
+fn run(invocation: Invocation) -> Result<()> {
+    let meta = cargo_metadata::metadata(invocation.manifest_path.as_ref().map(|p| p.as_ref()))
+        .map_err(failure::SyncFailure::new)?;
+
+    trace!("Metadata: {:#?}", meta);
+
+    let meta = meta::Meta::new(&invocation, &meta)?;
+    let cargo = cargo::Cargo::new(&invocation);
+
+    lipo::build(&cargo, &meta, &invocation.targets)
 }
 
-/// Invoke `cargo build` for the given triple.
-fn build_triple(build: BuildOptions) -> Result<()> {
-    let mut cmd = Command::new("cargo");
-    cmd.args(&[
-        "build",
-        "--target", build.triple,
-        "--lib",
-        "--features", build.features,
-        "--color", build.color]);
-
-    if build.release { cmd.arg("--release"); }
-    if build.verbose { cmd.arg("--verbose"); }
-    if build.no_default_features { cmd.arg("--no-default-features"); }
-
-    log_command(&cmd, build.verbose);
-
-    let status = trm!("Failed to build library for {}", build.triple; cmd.status());
-    trm!("Cargo exited unsuccessfully"; exit_to_result(status));
-
-    Ok(())
+#[derive(Copy, Clone, Debug)]
+enum Coloring {
+    Auto,
+    Always,
+    Never,
 }
 
-/// Find the name of the staticlibrary to build as defined in the project's `Cargo.toml`.
-fn find_lib_name(verbose: bool) -> Result<String> {
-    static ERR: &'static str = "Failed to parse `cargo read-manifest` output";
-
-    let value = trm!(ERR; cargo_json_value("read-manifest", verbose));
-
-    let targets = trm!(ERR; json_get!(Array, value.targets));
-
-    let mut lib_name = None;
-
-    for target in targets {
-        let kinds = trm!(ERR; json_get!(Array, target.kind));
-
-        for kind in kinds {
-            let kind = trm!(ERR; kind.as_string().ok_or("kind is not a string"));
-
-            if kind == "staticlib" {
-                if let Some(_) = lib_name {
-                    return Err(Error::new(ERR, "Multiple targets with kind `staticlib` found"));
-                }
-
-                lib_name = Some(trm!(ERR; json_get!(String, target.name)));
-            }
+impl Coloring {
+    pub fn value(self) -> &'static str {
+        match self {
+            Coloring::Auto => "auto",
+            Coloring::Always => "always",
+            Coloring::Never => "never",
         }
     }
 
-    match lib_name {
-        Some(name) => Ok(String::from("lib") + &name.replace("-", "_") + ".a"),
-        None => Err(Error::new(ERR, "No target with kind `staticlib` found")),
+    pub fn log_style(self) -> env_logger::WriteStyle {
+        match self {
+            Coloring::Auto => env_logger::WriteStyle::Auto,
+            Coloring::Always => env_logger::WriteStyle::Always,
+            Coloring::Never => env_logger::WriteStyle::Never,
+        }
     }
 }
 
-/// Find the path to the project's `target` directory.
-fn find_target_path(verbose: bool) -> Result<PathBuf> {
-    static ERR: &'static str = "Failed to parse `cargo metadata`";
-    static ERR2: &'static str = "Failed to verify target directory";
+impl std::str::FromStr for Coloring {
+    type Err = String;
 
-    let value = trm!(ERR; cargo_json_value("metadata", verbose));
-
-    let target_directory = trm!(ERR; json_get!(String, value.target_directory));
-    let target: &Path = target_directory.as_ref();
-
-    let meta = trm!(ERR2; fs::metadata(&target));
-
-    if !meta.is_dir() {
-        Err(Error::new(ERR2, "not a directory"))
-    } else {
-        Ok(target.to_path_buf())
-    }
-}
-
-/// Create a `serde_json::Value` from the output of the given cargo subcomand.
-fn cargo_json_value(subcommand: &str, verbose: bool) -> Result<json::Value> {
-    let mut cmd = Command::new("cargo");
-    cmd.arg(subcommand);
-
-    log_command(&cmd, verbose);
-
-    let output = trm!("Failed to execute cargo"; cmd.output());
-
-    trm!("Cargo exited unsuccessfully"; exit_to_result(output.status));
-
-    let json = trm!("Invalid json"; String::from_utf8(output.stdout));
-    let value = trm!("Invalid json"; json::from_str(&json));
-
-    Ok(value)
-}
-
-/// Convert an `ExitStatus` into a `Result`.
-fn exit_to_result(exit: ExitStatus) -> StdResult<(), String> {
-    if exit.success() {
-        Ok(())
-    } else {
-        Err(exit.to_string())
-    }
-}
-
-/// Log the given command to stdout if running in verbose mode.
-fn log_command(cmd: &Command, verbose: bool) {
-    if verbose {
-        println!("Executing: {:?}", cmd);
+    fn from_str(s: &str) -> std::result::Result<Self, Self::Err> {
+        match s {
+            "auto" => Ok(Coloring::Auto),
+            "always" => Ok(Coloring::Always),
+            "never" => Ok(Coloring::Never),
+            _ => Err(format!("Invalid coloring: '{}'", s)),
+        }
     }
 }
