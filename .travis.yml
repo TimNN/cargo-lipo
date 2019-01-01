@@ -40,3 +40,4 @@ script:
   - cargo build
   - export PATH="$PWD/target/debug:$PATH"
   - cargo lipo --version
+  - ./integration.bats.sh
