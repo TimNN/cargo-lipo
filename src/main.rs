@@ -1,10 +1,11 @@
 #![allow(clippy::needless_pass_by_value, clippy::new_ret_no_self, clippy::single_char_pattern)]
 #![deny(unused_must_use)]
 
-use log::{error, trace};
+use log::{error, warn, trace};
 use std::cmp;
 use std::ffi::OsString;
 use std::path::PathBuf;
+use std::process;
 use structopt::StructOpt;
 
 mod cargo;
@@ -43,6 +44,10 @@ struct Invocation {
     #[structopt(long, short)]
     #[structopt(parse(from_occurrences))]
     verbose: u32,
+
+    /// Override the check for running on macOS
+    #[structopt(long = "allow-run-on-non-macos")]
+    run_on_non_macos: bool,
 
     /// Determine `targets` and `release` from the environment provided by XCode to build scripts.
     #[structopt(long = "xcode-integ")]
@@ -132,6 +137,18 @@ fn main() {
 }
 
 fn run(invocation: Invocation) -> Result<()> {
+    if !cfg!(target_os = "macos") {
+        if invocation.run_on_non_macos {
+            warn!("Running on non-macOS, `cargo lipo` will likely not work");
+        } else {
+            error!(
+                "Running on non-macOS, `cargo lipo` will likely not work. \
+                 Use `--allow-run-on-non-macos` to override this check."
+            );
+            process::exit(1);
+        }
+    }
+
     let meta = cargo_metadata::metadata(invocation.manifest_path.as_ref().map(|p| p.as_ref()))
         .map_err(failure::SyncFailure::new)?;
 
