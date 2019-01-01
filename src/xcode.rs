@@ -31,29 +31,14 @@ pub(crate) fn integ(meta: &Meta, mut invocation: Invocation) -> Result<()> {
 }
 
 fn targets_from_env() -> Result<Vec<&'static str>> {
-    if only_active_arch() {
-        current_target().map(|t| vec![t])
-    } else {
-        let archs = env::var("ARCHS").with_context(|e| format!("Failed to read $ARCHS: {}", e))?;
-        Ok(archs
-            .split(" ")
-            .map(|a| a.trim())
-            .filter(|a| !a.is_empty())
-            .map(map_arch_to_target)
-            .collect::<Result<Vec<_>>>()
-            .with_context(|e| format!("Failed to parse $ARCHS: {}", e))?)
-    }
-}
-
-fn current_target() -> Result<&'static str> {
-    let arch = env::var("CURRENT_ARCH")
-        .with_context(|e| format!("Failed to read $CURRENT_ARCH: {}", e))?;
-    Ok(map_arch_to_target(&arch)
-        .with_context(|e| format!("Failed to parse $CURRENT_ARCH: {}", e))?)
-}
-
-fn only_active_arch() -> bool {
-    env::var("ONLY_ACTIVE_ARCH").map(|v| v == "YES").unwrap_or(false)
+    let archs = env::var("ARCHS").with_context(|e| format!("Failed to read $ARCHS: {}", e))?;
+    Ok(archs
+        .split(" ")
+        .map(|a| a.trim())
+        .filter(|a| !a.is_empty())
+        .map(map_arch_to_target)
+        .collect::<Result<Vec<_>>>()
+        .with_context(|e| format!("Failed to parse $ARCHS: {}", e))?)
 }
 
 fn is_release_configuration() -> bool {

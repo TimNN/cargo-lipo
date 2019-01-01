@@ -1,6 +1,7 @@
 #![allow(clippy::needless_pass_by_value, clippy::new_ret_no_self, clippy::single_char_pattern)]
 #![deny(unused_must_use)]
 
+use failure::ResultExt;
 use log::{error, warn, trace};
 use std::cmp;
 use std::ffi::OsString;
@@ -150,7 +151,8 @@ fn run(invocation: Invocation) -> Result<()> {
     }
 
     let meta = cargo_metadata::metadata(invocation.manifest_path.as_ref().map(|p| p.as_ref()))
-        .map_err(failure::SyncFailure::new)?;
+        .map_err(failure::SyncFailure::new)
+        .with_context(|e| format!("cargo_metadata failed: {}", e))?;
 
     trace!("Metadata: {:#?}", meta);
 
