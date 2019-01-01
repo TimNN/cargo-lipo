@@ -16,7 +16,7 @@ crate-type = ["staticlib"]
 
 ## Installation
 
-Install `cargo lipo` with `cargo install cargo-lipo`. `cargo lipo` can be build with rust 1.8 and later.
+Install `cargo lipo` with `cargo install cargo-lipo`. `cargo lipo` should always be buildable with the latest stable Rust version. For the minimum supported version check `.travis.yml`.
 
 You also need a rust compiler which can compile for the iOS targets. If you use [rustup](https://www.rustup.rs/) all you should have to do is
 
