@@ -1,0 +1,9 @@
+[workspace]
+
+members = [
+    "buildutil",
+    "normal",
+    "static1",
+    "static2build",
+    "static3bin",
+]

@@ -1,0 +1,13 @@
+edition = "2018"
+newline_style = "Unix"
+# I prefer crate -> self -> super
+reorder_imports = false
+use_small_heuristics = "Max"
+
+# Unstable options that can't be used on stable.
+#enum_discrim_align_threshold = 20
+#error_on_line_overflow = true
+#error_on_unformatted = true
+#format_macro_matchers = true
+#format_strings = true
+#wrap_comments = true

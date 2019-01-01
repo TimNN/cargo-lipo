@@ -1,8 +1,9 @@
 [package]
 name = "cargo-lipo"
-version = "2.0.0"
+version = "3.0.0"
 authors = ["Tim Neumann <mail@timnn.me>"]
 description = "cargo lipo subcommand to automatically create universal libraries for iOS"
+edition = "2018"
 
 homepage = "https://github.com/TimNN/cargo-lipo"
 repository = "https://github.com/TimNN/cargo-lipo"
@@ -14,5 +15,9 @@ keywords = ["cargo", "iOS"]
 license = "MIT/Apache-2.0"
 
 [dependencies]
-clap = "~2.2.3"
-serde_json = "0.7.0"
+cargo_metadata = "0.6"
+clap = "2.32"
+env_logger = "0.6"
+failure = { version = "0.1", default-features = false, features = ["std"] }
+log = "0.4"
+structopt = "0.2"

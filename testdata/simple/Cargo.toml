@@ -1,0 +1,8 @@
+[package]
+name = "simple"
+version = "0.1.0"
+authors = ["Tim Neumann <mail@timnn.me>"]
+edition = "2018"
+
+[lib]
+crate-type = ["staticlib"]

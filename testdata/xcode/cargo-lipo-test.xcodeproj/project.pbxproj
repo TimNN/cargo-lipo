@@ -1,0 +1,389 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		F633F83F21DBCE1800E5C165 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = F633F83E21DBCE1800E5C165 /* AppDelegate.m */; };
+		F633F84221DBCE1800E5C165 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = F633F84121DBCE1800E5C165 /* ViewController.m */; };
+		F633F84521DBCE1800E5C165 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F633F84321DBCE1800E5C165 /* Main.storyboard */; };
+		F633F84721DBCE1900E5C165 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F633F84621DBCE1900E5C165 /* Assets.xcassets */; };
+		F633F84A21DBCE1900E5C165 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F633F84821DBCE1900E5C165 /* LaunchScreen.storyboard */; };
+		F633F84D21DBCE1900E5C165 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = F633F84C21DBCE1900E5C165 /* main.m */; };
+		F6FD7E5321DBDF47002F618C /* libstatic1.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F6FD7E5021DBDF47002F618C /* libstatic1.a */; };
+		F6FD7E5421DBDF47002F618C /* libstatic2build.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F6FD7E5121DBDF47002F618C /* libstatic2build.a */; };
+		F6FD7E5521DBDF47002F618C /* libstatic3bin.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F6FD7E5221DBDF47002F618C /* libstatic3bin.a */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		F633F83A21DBCE1800E5C165 /* cargo-lipo-test.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "cargo-lipo-test.app"; sourceTree = BUILT_PRODUCTS_DIR; };
+		F633F83D21DBCE1800E5C165 /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		F633F83E21DBCE1800E5C165 /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		F633F84021DBCE1800E5C165 /* ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ViewController.h; sourceTree = "<group>"; };
+		F633F84121DBCE1800E5C165 /* ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ViewController.m; sourceTree = "<group>"; };
+		F633F84421DBCE1800E5C165 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		F633F84621DBCE1900E5C165 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
+		F633F84921DBCE1900E5C165 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
+		F633F84B21DBCE1900E5C165 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		F633F84C21DBCE1900E5C165 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		F6A4608121DBEFA900C7F1D2 /* integration.bats.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; name = integration.bats.sh; path = ../../integration.bats.sh; sourceTree = "<group>"; };
+		F6FD7E5021DBDF47002F618C /* libstatic1.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libstatic1.a; path = ../workspace/target/universal/debug/libstatic1.a; sourceTree = "<group>"; };
+		F6FD7E5121DBDF47002F618C /* libstatic2build.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libstatic2build.a; path = ../workspace/target/universal/debug/libstatic2build.a; sourceTree = "<group>"; };
+		F6FD7E5221DBDF47002F618C /* libstatic3bin.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libstatic3bin.a; path = ../workspace/target/universal/debug/libstatic3bin.a; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		F633F83721DBCE1800E5C165 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F6FD7E5321DBDF47002F618C /* libstatic1.a in Frameworks */,
+				F6FD7E5421DBDF47002F618C /* libstatic2build.a in Frameworks */,
+				F6FD7E5521DBDF47002F618C /* libstatic3bin.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		F633F83121DBCE1800E5C165 = {
+			isa = PBXGroup;
+			children = (
+				F633F83C21DBCE1800E5C165 /* cargo-lipo-test */,
+				F633F83B21DBCE1800E5C165 /* Products */,
+				F6FD7E4F21DBDF47002F618C /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		F633F83B21DBCE1800E5C165 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				F633F83A21DBCE1800E5C165 /* cargo-lipo-test.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		F633F83C21DBCE1800E5C165 /* cargo-lipo-test */ = {
+			isa = PBXGroup;
+			children = (
+				F633F83D21DBCE1800E5C165 /* AppDelegate.h */,
+				F633F83E21DBCE1800E5C165 /* AppDelegate.m */,
+				F633F84021DBCE1800E5C165 /* ViewController.h */,
+				F633F84121DBCE1800E5C165 /* ViewController.m */,
+				F633F84321DBCE1800E5C165 /* Main.storyboard */,
+				F633F84621DBCE1900E5C165 /* Assets.xcassets */,
+				F633F84821DBCE1900E5C165 /* LaunchScreen.storyboard */,
+				F633F84B21DBCE1900E5C165 /* Info.plist */,
+				F633F84C21DBCE1900E5C165 /* main.m */,
+			);
+			path = "cargo-lipo-test";
+			sourceTree = "<group>";
+		};
+		F6FD7E4F21DBDF47002F618C /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				F6A4608121DBEFA900C7F1D2 /* integration.bats.sh */,
+				F6FD7E5021DBDF47002F618C /* libstatic1.a */,
+				F6FD7E5121DBDF47002F618C /* libstatic2build.a */,
+				F6FD7E5221DBDF47002F618C /* libstatic3bin.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		F633F83921DBCE1800E5C165 /* cargo-lipo-test */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = F633F85021DBCE1900E5C165 /* Build configuration list for PBXNativeTarget "cargo-lipo-test" */;
+			buildPhases = (
+				F63A742221DBD3BD003E45B6 /* Run Script */,
+				F633F83621DBCE1800E5C165 /* Sources */,
+				F633F83721DBCE1800E5C165 /* Frameworks */,
+				F633F83821DBCE1800E5C165 /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "cargo-lipo-test";
+			productName = "cargo-lipo-test";
+			productReference = F633F83A21DBCE1800E5C165 /* cargo-lipo-test.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		F633F83221DBCE1800E5C165 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 1010;
+				ORGANIZATIONNAME = "Tim Neumann";
+				TargetAttributes = {
+					F633F83921DBCE1800E5C165 = {
+						CreatedOnToolsVersion = 10.1;
+					};
+				};
+			};
+			buildConfigurationList = F633F83521DBCE1800E5C165 /* Build configuration list for PBXProject "cargo-lipo-test" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = F633F83121DBCE1800E5C165;
+			productRefGroup = F633F83B21DBCE1800E5C165 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				F633F83921DBCE1800E5C165 /* cargo-lipo-test */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		F633F83821DBCE1800E5C165 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F633F84A21DBCE1900E5C165 /* LaunchScreen.storyboard in Resources */,
+				F633F84721DBCE1900E5C165 /* Assets.xcassets in Resources */,
+				F633F84521DBCE1800E5C165 /* Main.storyboard in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		F63A742221DBD3BD003E45B6 /* Run Script */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Run Script";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "export PATH=\"$HOME/.cargo/bin:$PATH\"\n\n# THIS IS A HACK AND REQUIRED WHEN DEVELOPING cargo-lipo\nif [ -f ./.xcode-lipo ]; then\n    export CARGO_LIPO=\"./.xcode-lipo lipo\"\nelse\n    export CARGO_LIPO=\"cargo lipo\"\nfi\n\n${CARGO_LIPO} --xcode-integ --all --manifest-path ../workspace/Cargo.toml\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		F633F83621DBCE1800E5C165 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				F633F84221DBCE1800E5C165 /* ViewController.m in Sources */,
+				F633F84D21DBCE1900E5C165 /* main.m in Sources */,
+				F633F83F21DBCE1800E5C165 /* AppDelegate.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		F633F84321DBCE1800E5C165 /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				F633F84421DBCE1800E5C165 /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		F633F84821DBCE1900E5C165 /* LaunchScreen.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				F633F84921DBCE1900E5C165 /* Base */,
+			);
+			name = LaunchScreen.storyboard;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		F633F84E21DBCE1900E5C165 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_BITCODE = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		F633F84F21DBCE1900E5C165 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_BITCODE = NO;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 12.1;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		F633F85121DBCE1900E5C165 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = "cargo-lipo-test/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				"LIBRARY_SEARCH_PATHS[arch=*]" = ../workspace/target/universal/debug;
+				PRODUCT_BUNDLE_IDENTIFIER = "me.timnn.cargo-lipo-test";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		F633F85221DBCE1900E5C165 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_STYLE = Automatic;
+				INFOPLIST_FILE = "cargo-lipo-test/Info.plist";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+				);
+				"LIBRARY_SEARCH_PATHS[arch=*]" = ../workspace/target/universal/release;
+				PRODUCT_BUNDLE_IDENTIFIER = "me.timnn.cargo-lipo-test";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		F633F83521DBCE1800E5C165 /* Build configuration list for PBXProject "cargo-lipo-test" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F633F84E21DBCE1900E5C165 /* Debug */,
+				F633F84F21DBCE1900E5C165 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		F633F85021DBCE1900E5C165 /* Build configuration list for PBXNativeTarget "cargo-lipo-test" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				F633F85121DBCE1900E5C165 /* Debug */,
+				F633F85221DBCE1900E5C165 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = F633F83221DBCE1800E5C165 /* Project object */;
+}

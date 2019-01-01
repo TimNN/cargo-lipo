@@ -1,29 +1,43 @@
 language: rust
 
-sudo: false
-
-# run builds for all the trains (and more)
+os: osx
+osx_image: xcode10.1
+addons:
+  homebrew:
+    packages:
+      - bats-core
 rust:
-  - nightly
-  - beta
-  # check it compiles on the latest stable compiler
   - stable
-  # and the first stable one (this should be bumped as the minimum
-  # Rust version required changes)
-  - 1.28.0
+  - 1.31.1
+  - beta
+  - nightly
 
-# load travis-cargo
+stages:
+  - check
+  - test
+
+jobs:
+  include:
+    - stage: check
+      os: linux
+      dist: xenial
+      rust: stable
+      before_script:
+        - rustup component add rustfmt clippy
+      script:
+        - (cd . && cargo fmt --all -- --check)
+        - (cd ./testdata/simple && cargo fmt --all -- --check)
+        - (cd ./testdata/workspace && cargo fmt --all -- --check)
+        - cargo clippy --all --manifest-path ./Cargo.toml -- --deny warnings
+        - cargo clippy --all --manifest-path ./testdata/simple/Cargo.toml -- --deny warnings
+        - cargo clippy --all --manifest-path ./testdata/workspace/Cargo.toml -- --deny warnings
+
 before_script:
-  - |
-      pip install 'travis-cargo<0.2' --user &&
-      export PATH=$HOME/.local/bin:$PATH
+  - rustup target add aarch64-apple-ios x86_64-apple-ios
 
-# the main build
 script:
-  - |
-      travis-cargo build
-
-env:
-  global:
-    # override the default `--features unstable` used for the nightly branch (optional)
-    - TRAVIS_CARGO_NIGHTLY_FEATURE=""
+  - set -e
+  - cargo build
+  - export PATH="$PWD/target/debug:$PATH"
+  - cargo lipo --version
+  - ./integration.bats.sh
