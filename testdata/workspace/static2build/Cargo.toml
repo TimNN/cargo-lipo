@@ -7,5 +7,8 @@ edition = "2018"
 [lib]
 crate-type = ["staticlib"]
 
+[dependencies]
+buildutil = { path = "../buildutil" }
+
 [build-dependencies]
 buildutil = { path = "../buildutil" }
