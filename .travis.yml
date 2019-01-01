@@ -8,9 +8,9 @@ addons:
       - bats-core
 rust:
   - stable
-#  - 1.28.0
+  - 1.28.0
   - beta
-#  - nightly
+  - nightly
 
 stages:
   - check
