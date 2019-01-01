@@ -8,7 +8,7 @@ addons:
       - bats-core
 rust:
   - stable
-  - 1.28.0
+  - 1.31.1
   - beta
   - nightly
 
