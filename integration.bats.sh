@@ -19,14 +19,8 @@ check_env() {
 }
 
 check_archs() {
-    local actual="$(
-        lipo -info "$2" |\
-            # Get stuff after the last colon
-            rev | cut -d':' -f1 | rev |\
-            # Convert to one arch per line
-            tr ' ' '\n' | grep -v '^$' |\
-            # Sort and concat with comma
-            sort | paste -sd',' -)"
+    # awk is used to trim a trailing space.
+    local actual="$(lipo -archs "$2" | awk '{$1=$1};1' |  tr ' ' '\n' | sort | paste -sd',' -)"
     if [ "$1" != "$actual" ]; then
         echo "Expected: [$1], actual: [$actual]"
         return 1
