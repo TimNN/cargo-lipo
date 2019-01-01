@@ -13,6 +13,9 @@
 		F633F84721DBCE1900E5C165 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = F633F84621DBCE1900E5C165 /* Assets.xcassets */; };
 		F633F84A21DBCE1900E5C165 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = F633F84821DBCE1900E5C165 /* LaunchScreen.storyboard */; };
 		F633F84D21DBCE1900E5C165 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = F633F84C21DBCE1900E5C165 /* main.m */; };
+		F6FD7E5321DBDF47002F618C /* libstatic1.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F6FD7E5021DBDF47002F618C /* libstatic1.a */; };
+		F6FD7E5421DBDF47002F618C /* libstatic2build.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F6FD7E5121DBDF47002F618C /* libstatic2build.a */; };
+		F6FD7E5521DBDF47002F618C /* libstatic3bin.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F6FD7E5221DBDF47002F618C /* libstatic3bin.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +29,10 @@
 		F633F84921DBCE1900E5C165 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		F633F84B21DBCE1900E5C165 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		F633F84C21DBCE1900E5C165 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		F6A4608121DBEFA900C7F1D2 /* integration.bats.sh */ = {isa = PBXFileReference; lastKnownFileType = text.script.sh; name = integration.bats.sh; path = ../../integration.bats.sh; sourceTree = "<group>"; };
+		F6FD7E5021DBDF47002F618C /* libstatic1.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libstatic1.a; path = ../workspace/target/universal/debug/libstatic1.a; sourceTree = "<group>"; };
+		F6FD7E5121DBDF47002F618C /* libstatic2build.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libstatic2build.a; path = ../workspace/target/universal/debug/libstatic2build.a; sourceTree = "<group>"; };
+		F6FD7E5221DBDF47002F618C /* libstatic3bin.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libstatic3bin.a; path = ../workspace/target/universal/debug/libstatic3bin.a; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -33,6 +40,9 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				F6FD7E5321DBDF47002F618C /* libstatic1.a in Frameworks */,
+				F6FD7E5421DBDF47002F618C /* libstatic2build.a in Frameworks */,
+				F6FD7E5521DBDF47002F618C /* libstatic3bin.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -44,6 +54,7 @@
 			children = (
 				F633F83C21DBCE1800E5C165 /* cargo-lipo-test */,
 				F633F83B21DBCE1800E5C165 /* Products */,
+				F6FD7E4F21DBDF47002F618C /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -71,6 +82,17 @@
 			path = "cargo-lipo-test";
 			sourceTree = "<group>";
 		};
+		F6FD7E4F21DBDF47002F618C /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				F6A4608121DBEFA900C7F1D2 /* integration.bats.sh */,
+				F6FD7E5021DBDF47002F618C /* libstatic1.a */,
+				F6FD7E5121DBDF47002F618C /* libstatic2build.a */,
+				F6FD7E5221DBDF47002F618C /* libstatic3bin.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -78,6 +100,7 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = F633F85021DBCE1900E5C165 /* Build configuration list for PBXNativeTarget "cargo-lipo-test" */;
 			buildPhases = (
+				F63A742221DBD3BD003E45B6 /* Run Script */,
 				F633F83621DBCE1800E5C165 /* Sources */,
 				F633F83721DBCE1800E5C165 /* Frameworks */,
 				F633F83821DBCE1800E5C165 /* Resources */,
@@ -135,6 +158,28 @@
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		F63A742221DBD3BD003E45B6 /* Run Script */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+			);
+			name = "Run Script";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "export PATH=\"$HOME/.cargo/bin:$PATH\"\n\n# THIS IS A HACK AND REQUIRED WHEN DEVELOPING cargo-lipo\nif [ -f ./.xcode-lipo ]; then\n    export CARGO_LIPO=\"./.xcode-lipo lipo\"\nelse\n    export CARGO_LIPO=\"cargo lipo\"\nfi\n\n${CARGO_LIPO} --xcode-integ --all --manifest-path ../workspace/Cargo.toml\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
 
 /* Begin PBXSourcesBuildPhase section */
 		F633F83621DBCE1800E5C165 /* Sources */ = {
@@ -204,6 +249,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_BITCODE = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -263,6 +309,7 @@
 				CODE_SIGN_IDENTITY = "iPhone Developer";
 				COPY_PHASE_STRIP = NO;
 				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_BITCODE = NO;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				GCC_C_LANGUAGE_STANDARD = gnu11;
@@ -291,6 +338,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				"LIBRARY_SEARCH_PATHS[arch=*]" = ../workspace/target/universal/debug;
 				PRODUCT_BUNDLE_IDENTIFIER = "me.timnn.cargo-lipo-test";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";
@@ -307,6 +355,7 @@
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
+				"LIBRARY_SEARCH_PATHS[arch=*]" = ../workspace/target/universal/release;
 				PRODUCT_BUNDLE_IDENTIFIER = "me.timnn.cargo-lipo-test";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				TARGETED_DEVICE_FAMILY = "1,2";

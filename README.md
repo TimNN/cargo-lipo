@@ -14,6 +14,28 @@ name = "..."
 crate-type = ["staticlib"]
 ```
 
+### XCode Integration
+
+`cargo-lipo` easily integrates with XCode. Although note that his functionality has only been added recently and may not yet be perfect (the XCode build process is somewhat of a blackbox to me).
+
+1. In your *"Build Settings"* change *"Enable Bitcode"* to **`No`**.
+
+2. Add a new *"Run Script"* phase to your *"Build Phases"*. Place it **before** *"Compile Sources"*. Add something like the following to the script:
+
+    ```bash
+    # The $PATH used by XCode likely won't contain Cargo, fix that.
+    # This assumes a default `rustup` setup.
+    export PATH="$HOME/.cargo/bin:$PATH"
+
+    # --xcode-integ determines --release and --targets from XCode's env vars.
+    # Depending your setup, specify the rustup toolchain explicitly.
+    cargo-lipo --xcode-integ --manifest-path ../something/Cargo.toml
+    ```
+
+3. Build the project once, then update the *"Link Binary with Libraries"* phase: Click the <kbd>+</kbd>, then choose *"Add Other..."*. Navigate to `your-cargo-project/target/universal/{debug-or-release}` and select your library(s).
+
+4. Go back to your *"Build Settings"* and add *"Library Search Paths"* for *"Debug"* and *"Release"*, pointing to `your-cargo-project/target/universal/{debug-or-release}`.
+
 ## Installation
 
 Install `cargo lipo` with `cargo install cargo-lipo`. `cargo lipo` should always be buildable with the latest stable Rust version. For the minimum supported version check `.travis.yml`.
