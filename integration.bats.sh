@@ -3,6 +3,15 @@
 check_env() {
     if [ -n "${CARGO_LIPO_TEST_DIRECT_CALL+x}" ]; then
         export CARGO_LIPO="cargo-lipo lipo --color=always"
+
+        cat > xcode/.xcode-lipo <<EOF
+#!/bin/bash
+
+exec $BATS_TEST_DIRNAME/target/debug/cargo-lipo "\$@"
+EOF
+
+        chmod +x xcode/.xcode-lipo
+
         return
     fi
 
@@ -15,7 +24,7 @@ check_env() {
         return 1
     fi
 
-    export CARGO_LIPO="cargo lipo"
+    export CARGO_LIPO="cargo lipo --color=always"
 }
 
 check_archs() {
@@ -25,6 +34,10 @@ check_archs() {
         echo "Expected: [$1], actual: [$actual]"
         return 1
     fi
+}
+
+xcode() {
+    xcodebuild -workspace xcode/cargo-lipo-test.xcodeproj/project.xcworkspace -scheme cargo-lipo-test -configuration $2 -sdk iphonesimulator12.1 $1
 }
 
 setup() {
@@ -82,4 +95,18 @@ setup() {
     check_archs arm64,x86_64 workspace/target/universal/debug/libstatic1.a
     check_archs arm64,x86_64 workspace/target/universal/debug/libstatic2build.a
     check_archs arm64,x86_64 workspace/target/universal/debug/libstatic3bin.a
+}
+
+@test "xcode build debug for simulator" {
+    xcode "clean build" Debug
+    check_archs x86_64 workspace/target/universal/debug/libstatic1.a
+    check_archs x86_64 workspace/target/universal/debug/libstatic2build.a
+    check_archs x86_64 workspace/target/universal/debug/libstatic3bin.a
+}
+
+@test "xcode build release for simulator" {
+    xcode "clean build" Release
+    check_archs x86_64 workspace/target/universal/release/libstatic1.a
+    check_archs x86_64 workspace/target/universal/release/libstatic2build.a
+    check_archs x86_64 workspace/target/universal/release/libstatic3bin.a
 }
