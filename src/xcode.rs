@@ -1,7 +1,7 @@
 use crate::{Invocation, Result};
 use crate::meta::Meta;
 use failure::{bail, ResultExt};
-use log::{warn, info};
+use log::warn;
 use std::env;
 use std::process::Command;
 
@@ -15,14 +15,6 @@ pub(crate) fn integ(meta: &Meta, mut invocation: Invocation) -> Result<()> {
     match env::var("ACTION").with_context(|e| format!("Failed to read $ACTION: {}", e))?.as_str() {
         "build" => {
             crate::lipo::build(&cargo, meta, &targets_from_env()?)?;
-        }
-        "clean" => {
-            for package in meta.packages() {
-                for target in targets_from_env()? {
-                    info!("Cleaning {:?} for {:?}", package.name(), target);
-                    cargo.clean(package.name(), target)?;
-                }
-            }
         }
         action => warn!("Unsupported XCode action: {:?}", action),
     }

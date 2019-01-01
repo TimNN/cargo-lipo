@@ -17,10 +17,6 @@ impl<'a> Cargo<'a> {
         crate::exec::run(self.prepare_build_lib(name, target))
     }
 
-    pub(crate) fn clean(&self, name: &str, target: &str) -> Result<()> {
-        crate::exec::run(self.prepare_build_lib(name, target))
-    }
-
     pub(crate) fn profile(&self) -> &str {
         if self.invocation.release {
             "release"
