@@ -13,7 +13,7 @@ pub(crate) fn integ(meta: &Meta, mut invocation: Invocation) -> Result<()> {
     let cargo = crate::cargo::Cargo::new(&invocation);
 
     match env::var("ACTION").with_context(|e| format!("Failed to read $ACTION: {}", e))?.as_str() {
-        "build" => {
+        "build" | "install" => {
             crate::lipo::build(&cargo, meta, &targets_from_env()?)?;
         }
         action => warn!("Unsupported XCode action: {:?}", action),
