@@ -110,3 +110,10 @@ setup() {
     check_archs x86_64 workspace/target/universal/release/libstatic2build.a
     check_archs x86_64 workspace/target/universal/release/libstatic3bin.a
 }
+
+@test "xcode install debug for simulator" {
+    xcode "clean install" Debug
+    check_archs x86_64 workspace/target/universal/debug/libstatic1.a
+    check_archs x86_64 workspace/target/universal/debug/libstatic2build.a
+    check_archs x86_64 workspace/target/universal/debug/libstatic3bin.a
+}
