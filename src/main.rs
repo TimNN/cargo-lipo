@@ -1,4 +1,9 @@
-#![allow(clippy::needless_pass_by_value, clippy::new_ret_no_self, clippy::single_char_pattern)]
+#![allow(
+    clippy::needless_pass_by_value,
+    clippy::new_ret_no_self,
+    clippy::redundant_closure,
+    clippy::single_char_pattern
+)]
 #![deny(unused_must_use)]
 
 use failure::ResultExt;
