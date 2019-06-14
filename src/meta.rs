@@ -10,7 +10,7 @@ pub(crate) struct Meta<'a> {
 
 pub(crate) struct Package<'a> {
     name: &'a str,
-    lib_name: &'a str,
+    lib_name: String,
 }
 
 impl<'a> Meta<'a> {
@@ -61,7 +61,7 @@ impl<'a> Meta<'a> {
                 }
                 [target] => {
                     if target.crate_types.iter().any(|ct| ct == "staticlib") {
-                        packages.push((package, target.name.as_str()));
+                        packages.push((package, target.name.replace('-', "_")));
                     } else {
                         if !staticlib_required {
                             debug!(
@@ -78,7 +78,7 @@ impl<'a> Meta<'a> {
         }
 
         let packages = packages
-            .iter()
+            .into_iter()
             .map(|(p, lib_name)| Package { name: p.name.as_str(), lib_name })
             .collect::<Vec<_>>();
 
@@ -110,7 +110,7 @@ impl<'a> Package<'a> {
         self.name
     }
 
-    pub(crate) fn lib_name(&self) -> &'a str {
-        self.lib_name
+    pub(crate) fn lib_name(&self) -> &str {
+        self.lib_name.as_str()
     }
 }
