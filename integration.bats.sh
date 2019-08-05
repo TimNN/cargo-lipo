@@ -37,7 +37,7 @@ check_archs() {
 }
 
 xcode() {
-    xcodebuild -workspace xcode/cargo-lipo-test.xcodeproj/project.xcworkspace -scheme cargo-lipo-test -configuration $2 -sdk iphonesimulator12.1 $1
+    xcodebuild -workspace xcode/cargo-lipo-test.xcodeproj/project.xcworkspace -scheme cargo-lipo-test -configuration $2 -sdk iphonesimulator12.2 $1
 }
 
 setup() {
