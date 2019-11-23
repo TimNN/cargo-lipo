@@ -29,7 +29,7 @@ crate-type = ["staticlib"]
 
     # --xcode-integ determines --release and --targets from Xcode's env vars.
     # Depending your setup, specify the rustup toolchain explicitly.
-    cargo-lipo --xcode-integ --manifest-path ../something/Cargo.toml
+    cargo lipo --xcode-integ --manifest-path ../something/Cargo.toml
     ```
 
 3. Build the project once, then update the *"Link Binary with Libraries"* phase: Click the <kbd>+</kbd>, then choose *"Add Other..."*. Navigate to `your-cargo-project/target/universal/{debug-or-release}` and select your library(s).
