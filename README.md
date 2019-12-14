@@ -16,7 +16,7 @@ crate-type = ["staticlib"]
 
 ### Xcode Integration
 
-`cargo-lipo` easily integrates with Xcode. Although note that his functionality has only been added recently and may not yet be perfect (the Xcode build process is somewhat of a blackbox to me).
+`cargo-lipo` easily integrates with Xcode. Although note that this functionality has only been added recently and may not yet be perfect (the Xcode build process is somewhat of a blackbox to me).
 
 1. In your *"Build Settings"* change *"Enable Bitcode"* to **`No`**.
 
