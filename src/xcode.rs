@@ -24,11 +24,9 @@ pub(crate) fn integ(meta: &Meta, mut invocation: Invocation) -> Result<()> {
 
 fn targets_from_env() -> Result<Vec<String>> {
     let archs = env::var("ARCHS").with_context(|e| format!("Failed to read $ARCHS: {}", e))?;
-    let platform_name = env::var("PLATFORM_NAME").with_context(|e| format!("Failed to read PLATFORM_NAME: {}", e))?;
-    let target_platform = match platform_name.as_str() {
-        "macosx" => "apple-darwin",
-        "iphoneos" => "apple-ios",
-        _ => bail!("Unknown platform name: {:?}", platform_name),
+    let target_platform = match env::var("PLATFORM_NAME").as_ref().map(String::as_str) {
+        Ok("macosx") => "apple-darwin",
+        _ => "apple-ios",
     };
     Ok(archs
         .split(" ")
