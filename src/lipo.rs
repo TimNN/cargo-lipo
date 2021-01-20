@@ -7,15 +7,22 @@ use std::fs;
 use std::process::Command;
 use std::path::Path;
 
-fn is_output_updated(output: impl AsRef<Path>, inputs: impl IntoIterator<Item=impl AsRef<Path>>) -> std::io::Result<bool> {
-    let output_mtime = fs::metadata(output)?.modified()?;
+fn should_update_output(
+    output: impl AsRef<Path>,
+    inputs: impl IntoIterator<Item = impl AsRef<Path>>,
+) -> std::io::Result<bool> {
+    let output_metadata = match fs::metadata(output) {
+        Ok(metadata) => metadata,
+        Err(_) => return Ok(true),
+    };
+    let output_mtime = output_metadata.modified()?;
     for input in inputs {
         let input_mtime = fs::metadata(input)?.modified()?;
         if input_mtime > output_mtime {
-            return Ok(false)
+            return Ok(true);
         }
     }
-    Ok(true)
+    Ok(false)
 }
 
 pub(crate) fn build(cargo: &Cargo, meta: &Meta, targets: &[impl AsRef<str>]) -> Result<()> {
@@ -49,18 +56,30 @@ pub(crate) fn build(cargo: &Cargo, meta: &Meta, targets: &[impl AsRef<str>]) -> 
 
         output.push(&lib_name);
 
-        if let Ok(true) = is_output_updated(&output, &inputs) {
-            info!("Universal library for {} is updated", package.name());
+        match should_update_output(&output, &inputs) {
+            Ok(true) => {}
+            Ok(false) => {
+                info!(
+                    "Universal library is up-to-date, skipping lipo invocation for {}",
+                    package.name()
+                );
+                continue;
+            }
+            Err(e) => {
+                warn!(
+                    "Failed to check if universal library for {:?} is up-to-date: {}",
+                    package.name(),
+                    e
+                )
+            }
         }
-        else {
-            let mut cmd = Command::new("lipo");
-            cmd.arg("-create").arg("-output").arg(output);
-            cmd.args(inputs);
+        let mut cmd = Command::new("lipo");
+        cmd.arg("-create").arg("-output").arg(output);
+        cmd.args(inputs);
 
-            info!("Creating universal library for {}", package.name());
+        info!("Creating universal library for {}", package.name());
 
-            crate::exec::run(cmd)?;
-        }
+        crate::exec::run(cmd)?;
     }
 
     Ok(())
