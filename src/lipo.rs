@@ -2,7 +2,7 @@ use crate::Result;
 use crate::cargo::Cargo;
 use crate::meta::Meta;
 use failure::ResultExt;
-use log::info;
+use log::{info, warn};
 use std::fs;
 use std::process::Command;
 use std::path::Path;
