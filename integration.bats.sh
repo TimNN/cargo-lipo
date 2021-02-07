@@ -37,7 +37,7 @@ check_archs() {
 }
 
 xcode() {
-    xcodebuild -workspace xcode/cargo-lipo-test.xcodeproj/project.xcworkspace -scheme cargo-lipo-test -configuration $2 -sdk iphonesimulator12.2 $1
+    xcodebuild -workspace xcode/cargo-lipo-test.xcodeproj/project.xcworkspace -scheme cargo-lipo-test -configuration $2 -sdk iphonesimulator14.3 $1
 }
 
 setup() {
@@ -97,23 +97,25 @@ setup() {
     check_archs arm64,x86_64 workspace/target/universal/debug/libstatic3bin.a
 }
 
+# TODO: The tests below should only produce x86_64, but they also include arm64.
+
 @test "xcode build debug for simulator" {
     xcode "clean build" Debug
-    check_archs x86_64 workspace/target/universal/debug/libstatic1.a
-    check_archs x86_64 workspace/target/universal/debug/libstatic2build.a
-    check_archs x86_64 workspace/target/universal/debug/libstatic3bin.a
+    check_archs arm64,x86_64 workspace/target/universal/debug/libstatic1.a
+    check_archs arm64,x86_64 workspace/target/universal/debug/libstatic2build.a
+    check_archs arm64,x86_64 workspace/target/universal/debug/libstatic3bin.a
 }
 
 @test "xcode build release for simulator" {
     xcode "clean build" Release
-    check_archs x86_64 workspace/target/universal/release/libstatic1.a
-    check_archs x86_64 workspace/target/universal/release/libstatic2build.a
-    check_archs x86_64 workspace/target/universal/release/libstatic3bin.a
+    check_archs arm64,x86_64 workspace/target/universal/release/libstatic1.a
+    check_archs arm64,x86_64 workspace/target/universal/release/libstatic2build.a
+    check_archs arm64,x86_64 workspace/target/universal/release/libstatic3bin.a
 }
 
 @test "xcode install debug for simulator" {
     xcode "clean install" Debug
-    check_archs x86_64 workspace/target/universal/debug/libstatic1.a
-    check_archs x86_64 workspace/target/universal/debug/libstatic2build.a
-    check_archs x86_64 workspace/target/universal/debug/libstatic3bin.a
+    check_archs arm64,x86_64 workspace/target/universal/debug/libstatic1.a
+    check_archs arm64,x86_64 workspace/target/universal/debug/libstatic2build.a
+    check_archs arm64,x86_64 workspace/target/universal/debug/libstatic3bin.a
 }

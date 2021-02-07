@@ -1,0 +1,67 @@
+name: Test
+
+on:
+  push:
+  schedule:
+    - cron: '21 3 ? * 6'
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        rust:
+          - stable
+          - 1.31.1
+          - beta
+          - nightly
+    steps:
+      - uses: actions/checkout@v2
+      - if: matrix.rust == 'stable'
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+          # Only install the components on stable (might not be available on nightly).
+          components: rustfmt, clippy
+      - if: matrix.rust != 'stable'
+        uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: stable
+      # Just check compilations on platforms other than stable.
+      - run: |
+          cargo check --all --manifest-path ./Cargo.toml
+      # Only run the stable versions of Clippy and rustfmt.
+      - if: matrix.rust == 'stable'
+        run: |
+          (cd . && cargo fmt --all -- --check)
+          (cd ./testdata/simple && cargo fmt --all -- --check)
+          (cd ./testdata/workspace && cargo fmt --all -- --check)
+          cargo clippy --all --manifest-path ./Cargo.toml -- --deny warnings
+          cargo clippy --all --manifest-path ./testdata/simple/Cargo.toml -- --deny warnings
+          cargo clippy --all --manifest-path ./testdata/workspace/Cargo.toml -- --deny warnings
+
+  test:
+    needs: check
+    runs-on: macos-latest
+    strategy:
+      max-parallel: 1
+      matrix:
+        # Only run integration tests on stable and MSRV.
+        rust:
+          - stable
+          - 1.31.1
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          profile: minimal
+          toolchain: ${{ matrix.rust }}
+      - run: |
+          rustup target add aarch64-apple-ios x86_64-apple-ios
+          cargo build
+          export PATH="$PWD/target/debug:$PATH"
+          cargo lipo --version
+          ./integration.bats.sh
+
