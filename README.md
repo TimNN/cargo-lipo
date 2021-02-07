@@ -1,6 +1,23 @@
-# `cargo lipo` [![Build Status](https://travis-ci.org/TimNN/cargo-lipo.svg?branch=master)](https://travis-ci.org/TimNN/cargo-lipo) [![Crates.io](https://img.shields.io/crates/v/cargo-lipo.svg)](https://crates.io/crates/cargo-lipo)
+# `cargo lipo` [![Build Status](https://img.shields.io/github/workflow/status/TimNN/cargo-lipo/Test/master)](https://github.com/TimNN/cargo-lipo/actions) [![Crates.io](https://img.shields.io/crates/v/cargo-lipo.svg)](https://crates.io/crates/cargo-lipo)
 
 Provides a `cargo lipo` subcommand which automatically creates a universal library for use with your iOS application.
+
+## Maintenance Status
+
+Please consider this project deprecated / passively maintained. This is partly because I am not currently working on any iOS projects, and partly because I believe that there exists a better alternative to using `lipo`:
+
+One can use architecture (and OS) specific environment variables in Xcode. The OS specific part could be configured in the Xcode project editor last time I tried, but the architecture specific part needed to be added by manually editing the `project.pbxproj` file, for example like this:
+
+```plain
+    "LIBRARY_SEARCH_PATHS[sdk=iphoneos*]" = ../path/to/target/debug/<...>;
+    "LIBRARY_SEARCH_PATHS[sdk=macosx11.1][arch=arm64]" = ../path/to/target/<...>;
+    "LIBRARY_SEARCH_PATHS[sdk=macosx11.1][arch=x86_64]" = ../path/to/target/<...>;
+```
+
+Thus, I believe that a future iOS support crate should offer primarily two features:
+
+* Something similar to the current `--xcode-integ` flag.
+* Something which can do the `project.pbxproj` editing.
 
 ## Usage
 
