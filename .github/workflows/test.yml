@@ -23,14 +23,14 @@ jobs:
         uses: actions-rs/toolchain@v1
         with:
           profile: minimal
-          toolchain: stable
+          toolchain: ${{ matrix.rust }}
           # Only install the components on stable (might not be available on nightly).
           components: rustfmt, clippy
       - if: matrix.rust != 'stable'
         uses: actions-rs/toolchain@v1
         with:
           profile: minimal
-          toolchain: stable
+          toolchain: ${{ matrix.rust }}
       # Just check compilations on platforms other than stable.
       - run: |
           cargo check --all --manifest-path ./Cargo.toml
