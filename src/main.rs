@@ -99,7 +99,7 @@ struct Invocation {
     #[structopt(long = "all-features")]
     all_features: bool,
 
-    /// Path to Cargo.toml
+    /// Do not activate the `default` feature
     #[structopt(long = "no-default-features")]
     no_default_features: bool,
 
