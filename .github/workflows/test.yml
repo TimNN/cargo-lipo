@@ -2,6 +2,8 @@ name: Test
 
 on:
   push:
+    branches: master
+  pull_request:
   schedule:
     - cron: '21 3 ? * 6'
 
@@ -21,16 +23,19 @@ jobs:
         uses: actions-rs/toolchain@v1
         with:
           profile: minimal
-          toolchain: stable
+          toolchain: ${{ matrix.rust }}
           # Only install the components on stable (might not be available on nightly).
           components: rustfmt, clippy
       - if: matrix.rust != 'stable'
         uses: actions-rs/toolchain@v1
         with:
           profile: minimal
-          toolchain: stable
+          toolchain: ${{ matrix.rust }}
       # Just check compilations on platforms other than stable.
-      - run: |
+      # Note that we have to explicitly exclude stable, because `cargo clippy`
+      # after `cargo check` does not work properly: https://github.com/rust-lang/rust-clippy/issues/4612
+      - if: matrix.rust == 'stable'
+        run: |
           cargo check --all --manifest-path ./Cargo.toml
       # Only run the stable versions of Clippy and rustfmt.
       - if: matrix.rust == 'stable'
