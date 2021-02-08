@@ -2,9 +2,9 @@ use crate::Result;
 use crate::cargo::Cargo;
 use crate::meta::Meta;
 use failure::ResultExt;
+use fat_macho::FatWriter;
 use log::info;
 use std::fs;
-use std::process::Command;
 
 pub(crate) fn build(cargo: &Cargo, meta: &Meta, targets: &[impl AsRef<str>]) -> Result<()> {
     for package in meta.packages() {
@@ -37,13 +37,16 @@ pub(crate) fn build(cargo: &Cargo, meta: &Meta, targets: &[impl AsRef<str>]) -> 
 
         output.push(&lib_name);
 
-        let mut cmd = Command::new("lipo");
-        cmd.arg("-create").arg("-output").arg(output);
-        cmd.args(inputs);
-
         info!("Creating universal library for {}", package.name());
-
-        crate::exec::run(cmd)?;
+        let mut writer = FatWriter::new();
+        for input in &inputs {
+            let content = fs::read(&input)
+                .with_context(|e| format!("Read file \"{}\" failed: {}", input.display(), e))?;
+            writer
+                .add(content)
+                .with_context(|e| format!("Add file \"{}\" failed: {}", input.display(), e))?;
+        }
+        writer.write_to_file(output)?;
     }
 
     Ok(())
