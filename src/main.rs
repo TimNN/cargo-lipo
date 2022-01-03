@@ -63,6 +63,8 @@ struct Invocation {
     /// Don't run `cargo clean` when XCode cleans the project.
     #[structopt(long = "xcode-ignore-clean")]
     #[structopt(requires = "xcode_integ")]
+    // This isn't actually implemented, so this is dead code.
+    #[allow(dead_code)]
     xcode_ignore_clean: bool,
 
     /// Don't remove environment variables that can cause issues with build scripts when calling
