@@ -62,6 +62,7 @@ crate-type = ["staticlib"]
    # they are out of date.
    rm -fv ../myproject/target/universal/*/*.a
    ```
+5. If you are planning to do `Archive` builds in the XCode application, you also need to go into your *"Build Settings"* and set *Enable Bitcode* to **`No`**.  This is because Rust uses a different LLVM than Xcode does, and the in-application XCode `Archive` build process does a bitcode verification which will fail on Rust libraries with an error message such as: `Invalid value (Producer: 'LLVM13.0.0-rust-1.57.0-stable' Reader: 'LLVM APPLE_1_1300.0.29.30_0') for architecture arm64`
 
 ## Installation
 
