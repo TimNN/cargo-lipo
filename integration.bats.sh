@@ -37,7 +37,7 @@ check_archs() {
 }
 
 xcode() {
-    xcodebuild -workspace xcode/cargo-lipo-test.xcodeproj/project.xcworkspace -scheme cargo-lipo-test -configuration $2 -sdk iphonesimulator14.3 $1
+    xcodebuild -workspace xcode/cargo-lipo-test.xcodeproj/project.xcworkspace -scheme cargo-lipo-test -configuration $2 -sdk "$SIM_SDK" $1
 }
 
 setup() {
@@ -48,6 +48,8 @@ setup() {
 
     cargo build --color=always --manifest-path "$BATS_TEST_DIRNAME/Cargo.toml"
     export PATH="$BATS_TEST_DIRNAME/target/debug:$PATH"
+
+    export SIM_SDK="$(xcodebuild -showsdks | grep -o 'iphonesimulator[0-9.]*')"
 }
 
 @test "build simple in directory" {
