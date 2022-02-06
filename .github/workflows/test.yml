@@ -64,6 +64,7 @@ jobs:
           profile: minimal
           toolchain: ${{ matrix.rust }}
       - run: |
+          brew install bats-core
           rustup target add aarch64-apple-ios x86_64-apple-ios
           cargo build
           export PATH="$PWD/target/debug:$PATH"
