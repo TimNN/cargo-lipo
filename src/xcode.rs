@@ -29,7 +29,7 @@ fn targets_from_env() -> Result<Vec<String>> {
         // There's a new "iphonesimulator" platform that requires a special abi suffix
         // We just look for "sim" here as a minimal distinguishing check from "iphoneos".
         Ok(s) if s.contains("sim") => ("apple-ios", Some("sim")),
-        _ => ("apple-ios", None)
+        _ => ("apple-ios", None),
     };
     Ok(archs
         .split(" ")
@@ -54,11 +54,13 @@ fn map_arch_to_target(arch: &str, platform: &str, abi: Option<&str>) -> Result<S
     };
     match abi {
         // the "sim" abi is only used with aarch64 builds
-        Some("sim") => if mapped_arch == "aarch64" {
-            Ok(format!("{}-{}-{}", mapped_arch, platform, "sim"))
-        } else {
-            Ok(format!("{}-{}", mapped_arch, platform))
-        },
+        Some("sim") => {
+            if mapped_arch == "aarch64" {
+                Ok(format!("{}-{}-{}", mapped_arch, platform, "sim"))
+            } else {
+                Ok(format!("{}-{}", mapped_arch, platform))
+            }
+        }
         Some(abi) => Ok(format!("{}-{}-{}", mapped_arch, platform, abi)),
         None => Ok(format!("{}-{}", mapped_arch, platform)),
     }

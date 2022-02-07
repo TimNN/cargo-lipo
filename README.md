@@ -54,7 +54,7 @@ crate-type = ["staticlib"]
 
 3. Next, go back to your *"Build Settings"* and add a *"Library Search Path"* of `$(PROJECT_DIR)../myproject/target/universal/$(CONFIGURATION:lower)`.  This will provide the right search paths for both debug and release.
 
-4. Finally, add a second *"Run Script"* build phase but leave this one at the bottom (so it runs after the build is complete).  Name this one "delete Rust static libraries" and make it run on every build.  The content of this phase should be something like:
+4. Finally, add a second *"Run Script"* build phase but leave this one at the bottom (so it runs after the build is complete).  Name this one "delete Rust static libraries" and make it run on every build.  (While it may seem counter-intuitive to delete the library we just built, it's needed to make Xcode's new build system run the build script each time.  Back in the days when there were just two target platforms -- x86_64 and arm64 -- the output of cargo lipo would have both and a rebuild wouldn't be necessary.  But now that there are actually three target platforms -- x86_64, arm64, and arm64-simulator -- the built library can only have one of the arm64 variants. Every time you change the target platform, the library will need to be rebuilt, but Xcode can't detect that because it's looking at mod dates not at target platforms.  So we always delete the built library after it's linked, in order to force it to be rebuilt with the correct target the next time through.) The content of this phase should be something like:
    ```bash
    # Delete the built libraries that were just linked.
    # If this isn't done, XCode won't try to rebuild them
@@ -63,6 +63,8 @@ crate-type = ["staticlib"]
    rm -fv ../myproject/target/universal/*/*.a
    ```
 5. If you are planning to do `Archive` builds in the XCode application, you also need to go into your *"Build Settings"* and set *Enable Bitcode* to **`No`**.  This is because Rust uses a different LLVM than Xcode does, and the in-application XCode `Archive` build process does a bitcode verification which will fail on Rust libraries with an error message such as: `Invalid value (Producer: 'LLVM13.0.0-rust-1.57.0-stable' Reader: 'LLVM APPLE_1_1300.0.29.30_0') for architecture arm64`
+
+A final note about XCode integration: because all XCode builds are "one target at a time", there's really no need to use `cargo lipo` at all when building for iOS.  For an example of an Xcode product that invokes cargo directly, look at the apps in the [`rust-on-ios` project](https://github.com/brotskydotcom/rust-on-ios).
 
 ## Installation
 
