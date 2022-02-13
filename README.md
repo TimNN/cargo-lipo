@@ -33,11 +33,9 @@ crate-type = ["staticlib"]
 
 ### Xcode Integration
 
-`cargo-lipo` easily integrates with Xcode. Although note that this functionality has only been added recently and may not yet be perfect (the Xcode build process is somewhat of a blackbox to me).
+`cargo-lipo` easily integrates with Xcode. For XCode 13, here is a recipe for the integration, assuming that your `myproject` crate (that has the static library) is a sibling of your XCode project directory and that your build library is `libmystatic.a`.
 
-1. In your *"Build Settings"* change *"Enable Bitcode"* to **`No`**.
-
-2. Add a new *"Run Script"* phase to your *"Build Phases"*. Place it **before** *"Compile Sources"*. Add something like the following to the script:
+1. Add a new *"Run Script"* phase to your *"Build Phases"*. Place it **before** *"Compile Sources"*. Name it "build Rust static library". Make it run on every build (uncheck dependency analysis), and give it an output file of `$(PROJECT_DIR)/../target/universal/$(CONFIGURATION:lower)/libmystatic.a`.  Add something like the following to the script:
 
     ```bash
     # The $PATH used by Xcode likely won't contain Cargo, fix that.
@@ -46,12 +44,27 @@ crate-type = ["staticlib"]
 
     # --xcode-integ determines --release and --targets from Xcode's env vars.
     # Depending your setup, specify the rustup toolchain explicitly.
-    cargo lipo --xcode-integ --manifest-path ../something/Cargo.toml
+    cargo lipo --xcode-integ --manifest-path ../myproject/Cargo.toml
     ```
 
-3. Build the project once, then update the *"Link Binary with Libraries"* phase: Click the <kbd>+</kbd>, then choose *"Add Other..."*. Navigate to `your-cargo-project/target/universal/{debug-or-release}` and select your library(s).
+2. Run cargo lipo manually to build both debug and release, then update the *"Link Binary with Libraries"* phase:
+   1. First add your debug library by clicking the <kbd>+</kbd>, choosing *"Add Other..."*, and navigating to `../myproject/target/universal/debug` and selecting your library.
+   2. Next add your release library similarly.
+   3. After adding both libraries to XCode, delete the actual static library files (not their references in the XCode project).  Yes, really.  If you don't, XCode won't think they need rebuilding so it won't run your script.
 
-4. Go back to your *"Build Settings"* and add *"Library Search Paths"* for *"Debug"* and *"Release"*, pointing to `your-cargo-project/target/universal/{debug-or-release}`.
+3. Next, go back to your *"Build Settings"* and add a *"Library Search Path"* of `$(PROJECT_DIR)../myproject/target/universal/$(CONFIGURATION:lower)`.  This will provide the right search paths for both debug and release.
+
+4. Finally, add a second *"Run Script"* build phase but leave this one at the bottom (so it runs after the build is complete).  Name this one "delete Rust static libraries" and make it run on every build.  (While it may seem counter-intuitive to delete the library we just built, it's needed to make Xcode's new build system run the build script each time.  Back in the days when there were just two target platforms -- x86_64 and arm64 -- the output of cargo lipo would have both and a rebuild wouldn't be necessary.  But now that there are actually three target platforms -- x86_64, arm64, and arm64-simulator -- the built library can only have one of the arm64 variants. Every time you change the target platform, the library will need to be rebuilt, but Xcode can't detect that because it's looking at mod dates not at target platforms.  So we always delete the built library after it's linked, in order to force it to be rebuilt with the correct target the next time through.) The content of this phase should be something like:
+   ```bash
+   # Delete the built libraries that were just linked.
+   # If this isn't done, XCode won't try to rebuild them
+   # by running the build scripts, because it won't think
+   # they are out of date.
+   rm -fv ../myproject/target/universal/*/*.a
+   ```
+5. If you are planning to do `Archive` builds in the XCode application, you also need to go into your *"Build Settings"* and set *Enable Bitcode* to **`No`**.  This is because Rust uses a different LLVM than Xcode does, and the in-application XCode `Archive` build process does a bitcode verification which will fail on Rust libraries with an error message such as: `Invalid value (Producer: 'LLVM13.0.0-rust-1.57.0-stable' Reader: 'LLVM APPLE_1_1300.0.29.30_0') for architecture arm64`
+
+A final note about XCode integration: because all XCode builds are "one target at a time", there's really no need to use `cargo lipo` at all when building for iOS.  For an example of an Xcode product that invokes cargo directly, look at the apps in the [`rust-on-ios` project](https://github.com/brotskydotcom/rust-on-ios).
 
 ## Installation
 
