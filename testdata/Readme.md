@@ -9,4 +9,4 @@ This directory contains Cargo projects to test `cargo-lipo` with:
     * `static1`: A simple `staticlib`, depends on `normal`.
     * `static2build`: A `staticlib` with a build script. Library and build script both depend on `buildutil`.
     * `static3bin`: Contains `staticlib`, that is also an `rlib`, as well as a `bin` target.
-* `xcode/`: A XCode project depending on all `staticlib`s from `workspace`.
+* `xcode/`: A Xcode project depending on all `staticlib`s from `workspace`.
