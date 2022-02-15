@@ -16,7 +16,7 @@ pub(crate) fn integ(meta: &Meta, mut invocation: Invocation) -> Result<()> {
         "build" | "install" => {
             crate::lipo::build(&cargo, meta, &targets_from_env()?)?;
         }
-        action => warn!("Unsupported XCode action: {:?}", action),
+        action => warn!("Unsupported Xcode action: {:?}", action),
     }
 
     Ok(())

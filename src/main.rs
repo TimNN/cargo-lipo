@@ -55,12 +55,12 @@ struct Invocation {
     #[structopt(long = "allow-run-on-non-macos")]
     run_on_non_macos: bool,
 
-    /// Determine `targets` and `release` from the environment provided by XCode to build scripts.
+    /// Determine `targets` and `release` from the environment provided by Xcode to build scripts.
     #[structopt(long = "xcode-integ")]
     #[structopt(conflicts_with = "release", conflicts_with = "targets")]
     xcode_integ: bool,
 
-    /// Don't run `cargo clean` when XCode cleans the project.
+    /// Don't run `cargo clean` when Xcode cleans the project.
     #[structopt(long = "xcode-ignore-clean")]
     #[structopt(requires = "xcode_integ")]
     // This isn't actually implemented, so this is dead code.
