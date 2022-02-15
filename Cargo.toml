@@ -19,5 +19,6 @@ cargo_metadata = "0.6"
 clap = "2.32"
 env_logger = "0.6"
 failure = { version = "0.1", default-features = false, features = ["std"] }
+fat-macho = "0.4.2"
 log = "0.4"
 structopt = "0.2"
