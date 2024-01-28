@@ -40,7 +40,7 @@ impl<'a> Meta<'a> {
         let mut packages = vec![];
 
         for &name in &package_names {
-            let package = match meta.packages.iter().find(|p| p.name == name) {
+            let package = match meta.packages.iter().find(|p| p.id == name || p.name == name) {
                 Some(p) => p,
                 None => bail!("No package metadata found for {:?}", name),
             };
