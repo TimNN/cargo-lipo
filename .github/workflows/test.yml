@@ -14,7 +14,7 @@ jobs:
       matrix:
         rust:
           - stable
-          - 1.31.1
+          - 1.59.0
           - beta
           - nightly
     steps:
@@ -56,7 +56,7 @@ jobs:
         # Only run integration tests on stable and MSRV.
         rust:
           - stable
-          - 1.31.1
+          - 1.59.0
     steps:
       - uses: actions/checkout@v2
       - uses: actions-rs/toolchain@v1
@@ -70,4 +70,3 @@ jobs:
           export PATH="$PWD/target/debug:$PATH"
           cargo lipo --version
           ./integration.bats.sh
-
