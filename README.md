@@ -1,4 +1,4 @@
-# `cargo lipo` [![Build Status](https://img.shields.io/github/workflow/status/TimNN/cargo-lipo/Test/master)](https://github.com/TimNN/cargo-lipo/actions) [![Crates.io](https://img.shields.io/crates/v/cargo-lipo.svg)](https://crates.io/crates/cargo-lipo)
+# `cargo lipo` [![Build Status](https://img.shields.io/github/actions/workflow/status/TimNN/cargo-lipo/test.yml?branch=master)](https://github.com/TimNN/cargo-lipo/actions) [![Crates.io](https://img.shields.io/crates/v/cargo-lipo.svg)](https://crates.io/crates/cargo-lipo)
 
 Provides a `cargo lipo` subcommand which automatically creates a universal library for use with your iOS application.
 
