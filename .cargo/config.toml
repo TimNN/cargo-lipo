@@ -1,0 +1,3 @@
+[profile.test-profile]
+debug = true
+inherits = "release"

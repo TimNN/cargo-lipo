@@ -18,7 +18,9 @@ impl<'a> Cargo<'a> {
     }
 
     pub(crate) fn profile(&self) -> &str {
-        if self.invocation.release {
+        if let Some(profile) = &self.invocation.profile {
+            profile
+        } else if self.invocation.release {
             "release"
         } else {
             "debug"
@@ -59,7 +61,9 @@ impl<'a> Cargo<'a> {
 
         cmd.arg("-p").arg(name).arg("--target").arg(target);
 
-        if self.invocation.release {
+        if let Some(profile) = &self.invocation.profile {
+            cmd.arg(format!("--profile={profile}"));
+        } else if self.invocation.release {
             cmd.arg("--release");
         }
 

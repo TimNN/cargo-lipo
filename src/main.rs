@@ -76,6 +76,11 @@ struct Invocation {
     #[structopt(long)]
     release: bool,
 
+    /// Build artifacts with custom profile
+    #[structopt(long)]
+    #[structopt(conflicts_with = "release")]
+    profile: Option<String>,
+
     /// Require Cargo.lock and cache are up to date
     #[structopt(long)]
     frozen: bool,

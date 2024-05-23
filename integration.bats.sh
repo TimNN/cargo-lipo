@@ -72,6 +72,11 @@ setup() {
     check_archs arm64,x86_64 simple/target/universal/release/libsimple.a
 }
 
+@test "build simple with --profile=test-profile" {
+    ${CARGO_LIPO} --profile=test-profile --manifest-path simple/Cargo.toml
+    check_archs arm64,x86_64 simple/target/universal/test-profile/libsimple.a
+}
+
 @test "build simple with --targets" {
     ${CARGO_LIPO} --targets aarch64-apple-ios --manifest-path simple/Cargo.toml
     check_archs arm64 simple/target/universal/debug/libsimple.a
